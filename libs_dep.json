@@ -1,0 +1,14 @@
+{
+"libs": [
+ {
+    "name": "common",
+    "prj_name": "CommonLib",
+    "tag": "master"
+ },
+ {
+    "name": "BLog",
+    "prj_name": "BLog",
+    "tag": "master"
+ }
+]
+}
