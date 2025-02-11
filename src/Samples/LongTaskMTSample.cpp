@@ -5,7 +5,8 @@
 namespace Sample
 {
 LongTaskMTSample::LongTaskMTSample()
-	: m_backgroundThread(&LongTaskMTSample::_Run, this)
+	: m_taskLooper(*this, m_mutex, m_cv)
+	, m_backgroundThread(&LongTaskMTSample::_Run, this)
 	, m_shutdown(false)
 {
 }
@@ -22,23 +23,13 @@ LongTaskMTSample::~LongTaskMTSample()
 
 void LongTaskMTSample::_Run()
 {
-	while (true)
-	{
-		std::unique_lock lk(m_mutex);
-		m_cv.wait(lk, [this]() { return !m_taskQueue.empty() || m_shutdown; });
-		if (m_shutdown && m_taskQueue.empty()) return;
-
-		Task task = m_taskQueue.front();
-		m_taskQueue.pop();
-		lk.unlock();
-		task.callback((this->*task.runnable)());
-	}
+	m_taskLooper.Run([this]() { return m_shutdown; });
 }
 
 void LongTaskMTSample::RunAsync(Callback_t i_callback)
 {
-	std::unique_lock lk(m_mutex);
-	m_taskQueue.push({ &LongTaskMTSample::RunSync, i_callback });
+	std::lock_guard lk(m_mutex);
+	m_taskLooper.Push({ &LongTaskMTSample::RunSync, i_callback });
 	m_cv.notify_one();
 }
 

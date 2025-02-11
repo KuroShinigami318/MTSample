@@ -31,7 +31,10 @@ endforeach()
 
 # Add source to this project's executable.
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS ${INCLUDE_DIR}/*.h ${INCLUDE_DIR}/*.hpp)
+include_directories(${INCLUDE_DIR})
+
 add_executable (${PROJECT_NAME} ${SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -39,6 +42,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/Release
                       RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_CURRENT_SOURCE_DIR}/MinSizeRel
                       RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_SOURCE_DIR}/RelWithDebInfo
+)
+target_sources(${PROJECT_NAME} PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${INCLUDE_DIR}
+    FILES ${HEADERS}
 )
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
 add_custom_target(copy_assets

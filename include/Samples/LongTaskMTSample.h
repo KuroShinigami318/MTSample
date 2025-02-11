@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils/TaskLooper.h"
 #include <condition_variable>
 #include <mutex>
 #include <thread>
@@ -12,22 +13,16 @@ public:
 	~LongTaskMTSample();
 	using RunResult = int;
 	using Callback_t = std::function<void(const RunResult& i_result)>;
+	using TaskLooper_t = utils::TaskLooper<RunResult(LongTaskMTSample::*)(), Callback_t>;
 public:
 	void RunAsync(Callback_t i_callback); // Should run very quickly as this 
-	RunResult RunSync();
-private:
-	struct Task
-	{
-		using Task_t = RunResult(LongTaskMTSample::*)();
-		Task_t runnable;
-		Callback_t callback;
-	};
+	RunResult RunSync();;
 private:
 	void _Run();
 	bool m_shutdown;
 	std::mutex m_mutex;
 	std::condition_variable m_cv;
-	std::queue<Task> m_taskQueue;
+	TaskLooper_t m_taskLooper;
 	std::thread m_backgroundThread;
 };
 } // namespace Sample

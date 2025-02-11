@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Samples/LongTaskMTSample.h"
+#include "Samples/DeadlockSample.h"
 #include "Utils/DurationTracker.h"
 #include "Log.h"
 
@@ -23,6 +24,11 @@ int main(int argc, char** argv)
 	{
 		DurationTracker("RunSync");
 		longTaskSample.RunSync();
+	}
+
+	{
+		DurationTracker("TestTransactions");
+		Sample::TestTransactions();
 	}
 
 	return 0;
