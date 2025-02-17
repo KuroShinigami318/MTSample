@@ -10,7 +10,8 @@ if (POLICY CMP0141)
 endif()
 set(ENV{CMAKE_BUILD_PARALLEL_LEVEL} 8)
 
-project ("MTSample")
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/Project This_Project)
+project(${This_Project})
 
 set(CMAKE_CXX_STANDARD 20)
 set(LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
