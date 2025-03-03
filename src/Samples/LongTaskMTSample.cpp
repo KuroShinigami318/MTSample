@@ -29,7 +29,7 @@ void LongTaskMTSample::_Run()
 void LongTaskMTSample::RunAsync(Callback_t i_callback)
 {
 	std::lock_guard lk(m_mutex);
-	m_taskLooper.Push({ &LongTaskMTSample::RunSync, i_callback });
+	m_taskLooper.Push(&LongTaskMTSample::RunSync, i_callback);
 	m_cv.notify_one();
 }
 

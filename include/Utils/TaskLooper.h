@@ -9,9 +9,10 @@ template <typename RunResult, typename Context, typename Callback_t>
 class TaskLooper<RunResult(Context::*)(), Callback_t>
 {
 public:
+	using Task_t = RunResult(Context::*)();
+
 	struct Task
 	{
-		using Task_t = RunResult(Context::*)();
 		Task_t runnable;
 		Callback_t callback;
 	};
@@ -37,9 +38,9 @@ public:
 		}
 	}
 
-	void Push(Task&& i_task)
+	void Push(Task_t i_runnable, Callback_t i_callback)
 	{
-		m_taskQueue.push(std::move(i_task));
+		m_taskQueue.emplace(i_runnable, i_callback);
 	}
 
 private:
