@@ -40,7 +40,7 @@ public:
 
 	void Push(Task_t i_runnable, Callback_t i_callback)
 	{
-		m_taskQueue.emplace(i_runnable, i_callback);
+		m_taskQueue.emplace(Task{ i_runnable, i_callback });
 	}
 
 private:
